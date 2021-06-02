@@ -1,6 +1,10 @@
 import React from 'react'
 import Button from '../ui/Button'
 
+// icons
+import DateIcon from '../icons/date-icon'
+import AddressIcon from '../icons/address-icon'
+import ArrowRight from '../icons/arrow-right-icon'
 
 // styling
 import styles from './EventItem.module.css'
@@ -24,15 +28,20 @@ const EventItem = (props) => {
       <div className={styles.content}>
         <div className={styles.summary}>
           <h2>{title}</h2>
-          <div>
-            <time className={styles.date}>{humanReadableDate}</time>
+          <div className={styles.date}>
+            <DateIcon />
+            <time>{humanReadableDate}</time>
           </div>
-          <div>
-            <address className={styles.address}>{formatedAddress}</address>
+          <div className={styles.address}>
+            <AddressIcon />
+            <address>{formatedAddress}</address>
           </div>
         </div>
         <div>
-          <Button link={exploreLink}>Explore Event</Button>
+          <Button link={exploreLink}>
+            <span>Explore Event</span>
+            <span className={styles.icon}><ArrowRight/></span>
+            </Button>
         </div>
       </div>
     </li>
