@@ -1,5 +1,6 @@
 import React from 'react'
-import Link from 'next/link'
+import Button from '../ui/Button'
+
 
 // styling
 import styles from './EventItem.module.css'
@@ -31,7 +32,7 @@ const EventItem = (props) => {
           </div>
         </div>
         <div>
-          <Link href={exploreLink} className={styles.actions}>Explore Link</Link>
+          <Button link={exploreLink}>Explore Event</Button>
         </div>
       </div>
     </li>
