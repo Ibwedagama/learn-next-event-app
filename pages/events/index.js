@@ -1,81 +1,48 @@
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import useSWR from 'swr'
-// import { getAllEvents } from '../../data/dummy-data'
-import EvenLists from '../../components/events/EventList'
-import EventSearch from '../../components/events/EventSearch'
+import { Fragment } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 
-const AllEventsPage = (props) => {
+import { getAllEvents } from '../../helpers/api-util';
+import EventList from '../../components/events/event-list';
+import EventsSearch from '../../components/events/events-search';
 
-  const [items, setItems] = useState(props.items)
-  const url = `${process.env.NEXT_PUBLIC_FIREBASE_SERVER}/events.json`
-  const { data, error } = useSWR(url)
-  
-  useEffect(() => {
-    const transformedData = []
+function AllEventsPage(props) {
+  const router = useRouter();
+  const { events } = props;
 
-    for (const key in data) {
-      transformedData.push({
-        id: key,
-        title: data[key].title,
-        description: data[key].description,
-        date: data[key].date,
-        location: data[key].location,
-        image: data[key].image,
-        isFeatured: data[key].isFeatured,
-      })
-    }
-    setItems(transformedData)
-  }, [data])
+  function findEventsHandler(year, month) {
+    const fullPath = `/events/${year}/${month}`;
 
-  // const findFilterdEvents = (year, month) => {
-  //   const fullPath = `/events/${year}/${month}`
-  //   router.push(fullPath)
-  // }
-
-  if (error) {
-    return <p>Sorry there is an error</p>
-  }
-
-  if (!data && !items) {
-    return <p>Loading...</p>
+    router.push(fullPath);
   }
 
   return (
-    <>
-      {/* <EventSearch onSearch={findFilterdEvents} /> */}
-      <EvenLists items={items} />
-    </>
-  )
+    <Fragment>
+      <Head>
+        <title>All my events</title>
+      </Head>
+      <Head>
+        <title>All Events</title>
+        <meta
+          name='description'
+          content='Find a lot of great events that allow you to evolve...'
+        />
+      </Head>
+      <EventsSearch onSearch={findEventsHandler} />
+      <EventList items={events} />
+    </Fragment>
+  );
 }
 
 export async function getStaticProps() {
-  const url = `${process.env.NEXT_PUBLIC_FIREBASE_SERVER}/events.json`
-  let transformedData = []
-  try {
-    const response = await fetch(url)
-    const data = await response.json()
-
-    for (const key in data) {
-      transformedData.push({
-        id: key,
-        title: data[key].title,
-        description: data[key].description,
-        date: data[key].date,
-        location: data[key].location,
-        image: data[key].image,
-        isFeatured: data[key].isFeatured,
-      })
-    }
-  } catch (error) {
-    transformedData = []
-  }
+  const events = await getAllEvents();
 
   return {
     props: {
-      items: transformedData
-    }
-  }
+      events: events,
+    },
+    revalidate: 60
+  };
 }
 
-export default AllEventsPage
+export default AllEventsPage;
