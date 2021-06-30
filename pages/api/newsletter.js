@@ -5,14 +5,12 @@ import { MongoClient } from 'mongodb'
 async function handler(req, res) {
 
   const mongodbUsername = process.env.NEXT_PUBLIC_MONGODB_USERNAME
-  console.log(mongodbUsername)
   const mongodbPassword = process.env.NEXT_PUBLIC_MONGODB_PASSWORD
-  console.log(mongodbPassword)
 
   if (req.method === 'POST') {
     const userEmail = req.body.email
 
-    if (!userEmail || !userEmail.include('@')) {
+    if (!userEmail) {
       res.status(422).json({ message: 'Invalid email address.' })
       return
     }
